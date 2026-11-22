@@ -3,6 +3,10 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './data/firebase.js';
 import { SK, SK_FONT, flatBox } from './ui.jsx';
 
+// Only set on the demo deploy — adds a one-tap "peek at the demo" button.
+const DEMO_EMAIL = import.meta.env.VITE_DEMO_EMAIL;
+const DEMO_PASSWORD = import.meta.env.VITE_DEMO_PASSWORD;
+
 export function LoginScreen() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -15,6 +19,17 @@ export function LoginScreen() {
     setError('');
     try {
       await signInWithEmailAndPassword(auth, email, password);
+    } catch {
+      setError("hmm, that didn't work — try again? ♡");
+      setLoading(false);
+    }
+  }
+
+  async function handleDemo() {
+    setLoading(true);
+    setError('');
+    try {
+      await signInWithEmailAndPassword(auth, DEMO_EMAIL, DEMO_PASSWORD);
     } catch {
       setError("hmm, that didn't work — try again? ♡");
       setLoading(false);
@@ -87,6 +102,29 @@ export function LoginScreen() {
             {loading ? 'opening...' : 'log in ♡'}
           </button>
         </form>
+
+        {DEMO_EMAIL && DEMO_PASSWORD && (
+          <React.Fragment>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%' }}>
+              <div style={{ flex: 1, height: 2, background: SK.line, borderRadius: 1 }} />
+              <span style={{ fontSize: 13, color: SK.inkSoft }}>or</span>
+              <div style={{ flex: 1, height: 2, background: SK.line, borderRadius: 1 }} />
+            </div>
+            <button
+              type="button"
+              onClick={handleDemo}
+              disabled={loading}
+              style={{
+                width: '100%', padding: '11px', background: SK.butter, color: SK.ink,
+                fontFamily: SK_FONT.hand, fontWeight: 700, fontSize: 16,
+                ...flatBox(12, 2.5), cursor: loading ? 'default' : 'pointer',
+                opacity: loading ? 0.7 : 1, transition: 'opacity .15s',
+              }}
+            >
+              peek at the demo ♡
+            </button>
+          </React.Fragment>
+        )}
       </div>
     </div>
   );

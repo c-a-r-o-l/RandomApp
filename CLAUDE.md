@@ -4,6 +4,24 @@
 
 "Secret Sketchbook" (`our journey ♡`) — a personal scrapbook PWA for a single user. Deployed to Vercel; auto-deploys on `git push` to `master`.
 
+## Demo deploy
+
+A second, fully separate Vercel deploy + Firebase project for demos — people can click around without ever touching the real data.
+
+- `src/data/firebase.js` reads config from `VITE_FIREBASE_*` env vars, falling back to the hardcoded real project — same codebase runs against either.
+- The demo deploy sets `VITE_DEMO_EMAIL`/`VITE_DEMO_PASSWORD`, which adds a one-tap "peek at the demo ♡" button on `LoginScreen` (absent on the real deploy, where the vars aren't set).
+- `scripts/seed-demo.mjs` seeds the demo project: creates/logs into the demo user, then writes sample thoughts, photos (SVG doodles), and settings. Idempotent — re-run with `--force` to reseed. A successful run also proves the project is configured (Email/Password provider, rules). Run it with `DEMO_*` env vars (the script prints the Vercel env block + suggested rules at the end).
+- Demo Firestore/Storage rules: `allow read, write: if request.auth != null;` — fake data, auth-required keeps random drive-bys out.
+- Demo Vercel project: same repo, env vars = the block the seed script prints. Auto-deploys on push like the main one.
+- `native/App.js` `APP_URL`: point it at the demo Vercel URL to demo from Expo Go.
+
+## Native wrapper (`native/`)
+
+A minimal Expo (SDK 58, blank JS template) app that shows the deployed site in a full-screen WebView — for opening the app through Expo Go on a phone. **Not** a React Native port: the web app stays untouched; the wrapper just points at it.
+
+- `APP_URL` at the top of `native/App.js` is what it loads (the Vercel deploy; swap in `http://<lan-ip>:5173` to test against the local dev server).
+- Run it: `cd native && npx expo start`, then scan the QR code with Expo Go (phone + computer on the same Wi-Fi, or `--tunnel`).
+
 ## Running locally
 
 ```
@@ -11,7 +29,7 @@ npm run dev    # Vite dev server
 npm run build  # production build → dist/
 ```
 
-No `.env` needed — Firebase config is hardcoded in `src/data/firebase.js` (public config, security enforced via Firestore rules).
+No `.env` needed — Firebase config is hardcoded in `src/data/firebase.js` (public config, security enforced via Firestore rules), with optional `VITE_FIREBASE_*` env overrides for the demo deploy.
 
 ## Tech stack
 
