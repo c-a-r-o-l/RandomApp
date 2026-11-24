@@ -55,7 +55,6 @@ src/
     firebase.js     Init; exports db, storage, auth
     thoughts.js     Firestore CRUD for thoughts collection
     photos.js       Firestore + Storage CRUD for photos collection
-    contributions.js Firestore append-only activity log (for heatmap)
     settings.js     Firestore synced-settings doc (settings/app)
 ```
 
@@ -71,7 +70,6 @@ src/
 |---|---|
 | `thoughts` | `title`, `body`, `tags[]`, `pin`, `scrap`, `hidden`, `color`, `created` (Timestamp), `markedDate` (Timestamp\|null) |
 | `photos` | `src` (Storage URL), `caption`, `fav`, `scrap`, `hidden`, `created` (Timestamp), `markedDate` (Timestamp\|null) |
-| `contributions` | `date` (YYYY-MM-DD), `type`, `createdAt` (Timestamp) |
 | `settings` | single doc `app`: `startISO`, `metISO`, `tags[]`, `countdowns[]`, `hiddenToken` — synced via `useSyncedSettings` in `App.jsx` (localStorage is first-paint cache / migration source) |
 
 Firebase Storage: images at `photos/{id}`. `deletePhoto(id)` removes both the Storage object and the Firestore doc.
@@ -92,6 +90,7 @@ Named exports only (no globals). Key ones:
 - **`flatBox(radius, width)`** — flat 2D card border style (no shadow)
 - **`miniBtn`** — base style for small action buttons
 - **`toDateInput(ts)` / `dateInputToTs(str, fallback)`** — ms ↔ `<input type="date">` value
+- **`startOfWeek(ts)`** — Monday-start week timestamp
 
 ## Key behaviours
 
@@ -99,7 +98,7 @@ Named exports only (no globals). Key ones:
 - **Scrapbook**: thoughts and photos with `scrap: true` appear in Scrapbook, grouped by calendar week, 4 items per page.
 - **Home layouts**: `card`, `scrapbook`, `journal` — the `homeStyle` tweak in `App.jsx` (`TWEAK_DEFAULTS`, wrapped in `/*EDITMODE-BEGIN*/…/*EDITMODE-END*/` markers).
 - **Relationship counter**: `startISO` = "together since", `metISO` = "met on". Synced via the `settings` doc; editable by tapping the counter on the Home tab.
-- **Contributions heatmap**: GitHub-style activity grid on Home, fed from the `contributions` Firestore collection.
+- **Contributions heatmap**: GitHub-style activity grid on Home (last 13 weeks), derived from the `created` dates of thoughts and photos.
 
 ## Tags
 

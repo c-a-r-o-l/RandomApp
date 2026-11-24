@@ -62,6 +62,13 @@ export function dateInputToTs(v, prevTs) {
   dt.setFullYear(y, m - 1, d);
   return dt.getTime();
 }
+// Monday-start week timestamp (scrapbook pages, heatmap grid)
+export function startOfWeek(ts) {
+  const d = new Date(ts); d.setHours(0, 0, 0, 0);
+  const day = (d.getDay() + 6) % 7; // Mon = 0
+  d.setDate(d.getDate() - day);
+  return d.getTime();
+}
 
 // ── Squirrel mascot ──────────────────────────────────────────
 const SQUIRREL_SRC = squirrelSrc;

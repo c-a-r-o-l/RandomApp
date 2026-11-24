@@ -1,5 +1,5 @@
 import React from 'react';
-import { SK, SK_FONT, uid, Squirrel, Washi, Paperclip, Heart, paperBg, miniBtn } from './ui.jsx';
+import { SK, SK_FONT, uid, Squirrel, Washi, Paperclip, Heart, paperBg, miniBtn, startOfWeek } from './ui.jsx';
 import celebrateSrc from '../assets/celebrate.gif';
 
 export function useCounter(startISO) {
@@ -540,7 +540,6 @@ export function Placeholder({ label, h = 160 }) {
 
 // ── Contribution stats heatmap ───────────────────────────────
 export const dayStart = ts => { const d = new Date(ts); d.setHours(0, 0, 0, 0); return d.getTime(); };
-function startOfWeekH(ts) { const d = new Date(ts); d.setHours(0, 0, 0, 0); const day = (d.getDay() + 6) % 7; d.setDate(d.getDate() - day); return d.getTime(); }
 
 function withA(hex, a) {
   const h = hex.replace('#', '');
@@ -558,7 +557,7 @@ export function HomeStats({ data }) {
   }, [thoughts, photos]);
 
   const WEEKS = 13;
-  const firstWeek = startOfWeekH(Date.now()) - (WEEKS - 1) * 7 * 86400000;
+  const firstWeek = startOfWeek(Date.now()) - (WEEKS - 1) * 7 * 86400000;
   const today = dayStart(Date.now());
   const total = thoughts.length + photos.length;
 

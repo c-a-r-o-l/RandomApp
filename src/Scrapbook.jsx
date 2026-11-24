@@ -1,13 +1,6 @@
 import React from 'react';
-import { SK, SK_FONT, useStored, Squirrel, Washi, paperBg, useDragDismiss } from './ui.jsx';
+import { SK, SK_FONT, useStored, Squirrel, Washi, paperBg, useDragDismiss, startOfWeek } from './ui.jsx';
 import { dayStart } from './Home.jsx';
-
-function startOfWeek(ts) {
-  const d = new Date(ts); d.setHours(0, 0, 0, 0);
-  const day = (d.getDay() + 6) % 7; // Mon = 0
-  d.setDate(d.getDate() - day);
-  return d.getTime();
-}
 const weekLabel = ws => 'week of ' + new Date(ws).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 const weekShort = ws => new Date(ws).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 const dayLabel = ts => new Date(ts).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: '2-digit' });
@@ -156,7 +149,7 @@ function Page({ page, accent, onOpen }) {
   }
 
   return (
-    <div style={{ position: 'relative', height: '100%', display: 'flex', justifyContent: 'center' }}>
+    <div style={{ position: 'relative', height: '100%', display: 'flex', justifyContent: 'center', maxWidth: 460, margin: '0 auto' }}>
       <div style={{ position: 'absolute', top: 8, bottom: 8, right: -5, width: 6, background: SK.paper2, borderRadius: 4, border: `2px solid ${SK.border}` }} />
       <div style={{ position: 'absolute', top: 5, bottom: 5, right: -10, width: 6, background: SK.card, borderRadius: 4, border: `2px solid ${SK.border}` }} />
       <div style={{
@@ -269,7 +262,7 @@ export function Scrapbook({ data }) {
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', ...deskBg() }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 14px 6px', flexShrink: 0 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 14px 6px', flexShrink: 0, maxWidth: 460, margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
         <div style={{ flex: 1, display: 'flex' }}>
           <button onClick={() => setCalOpen(true)} style={toolBtn}><ToolIcon kind="cal" /> date</button>
         </div>
